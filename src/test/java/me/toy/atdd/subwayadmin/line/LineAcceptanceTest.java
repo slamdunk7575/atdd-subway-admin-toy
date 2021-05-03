@@ -64,12 +64,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void getLine() {
         // given
         // 지하철_노선_등록되어_있음
+        String createdLocationUri = LineAcceptanceTestRequest.지하철_노선_등록되어_있음("8호선", "pink");
 
         // when
         // 지하철_노선_조회_요청
+        ExtractableResponse<Response> response = LineAcceptanceTestRequest.지하철_노선_조회_요청(createdLocationUri);
 
         // then
         // 지하철_노선_응답됨
+        LineAcceptanceTestResponse.지하철_노선_응답됨(response, createdLocationUri);
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -77,12 +80,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateLine() {
         // given
         // 지하철_노선_등록되어_있음
+        String createdLocationUri = LineAcceptanceTestRequest.지하철_노선_등록되어_있음("8호선", "pink");
 
         // when
         // 지하철_노선_수정_요청
+        ExtractableResponse<Response> response = LineAcceptanceTestRequest.지하철_노선_수정_요청(createdLocationUri, "신분당선", "red");
 
         // then
         // 지하철_노선_수정됨
+        LineAcceptanceTestResponse.지하철_노선_수정됨(response);
     }
 
     @DisplayName("지하철 노선을 제거한다.")
@@ -90,11 +96,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void deleteLine() {
         // given
         // 지하철_노선_등록되어_있음
+        String createdLocationUri = LineAcceptanceTestRequest.지하철_노선_등록되어_있음("8호선", "pink");
 
         // when
         // 지하철_노선_제거_요청
+        ExtractableResponse<Response> response = LineAcceptanceTestRequest.지하철_노선_제거_요청(createdLocationUri);
 
         // then
         // 지하철_노선_삭제됨
+        LineAcceptanceTestResponse.지하철_노선_삭제됨(response);
     }
 }
