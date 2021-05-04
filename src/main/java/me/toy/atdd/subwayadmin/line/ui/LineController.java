@@ -3,7 +3,6 @@ package me.toy.atdd.subwayadmin.line.ui;
 import me.toy.atdd.subwayadmin.line.application.LineService;
 import me.toy.atdd.subwayadmin.line.dto.LineRequest;
 import me.toy.atdd.subwayadmin.line.dto.LineResponse;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,11 +44,6 @@ public class LineController {
     public ResponseEntity deleteLine(@PathVariable Long id) {
         lineService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
-        return ResponseEntity.badRequest().build();
     }
 
 }

@@ -3,7 +3,6 @@ package me.toy.atdd.subwayadmin.station.ui;
 import me.toy.atdd.subwayadmin.station.application.StationService;
 import me.toy.atdd.subwayadmin.station.dto.StationRequest;
 import me.toy.atdd.subwayadmin.station.dto.StationResponse;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +36,4 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
-        return ResponseEntity.badRequest().build();
-    }
 }
