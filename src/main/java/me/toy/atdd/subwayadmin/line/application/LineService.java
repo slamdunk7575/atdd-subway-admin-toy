@@ -4,6 +4,7 @@ import me.toy.atdd.subwayadmin.line.domain.Line;
 import me.toy.atdd.subwayadmin.line.domain.LineRepository;
 import me.toy.atdd.subwayadmin.line.dto.LineRequest;
 import me.toy.atdd.subwayadmin.line.dto.LineResponse;
+import me.toy.atdd.subwayadmin.section.application.SectionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +16,17 @@ import java.util.stream.Collectors;
 @Transactional
 public class LineService {
     private LineRepository lineRepository;
+    private SectionService sectionService;
 
-    public LineService(LineRepository lineRepository) {
+    public LineService(LineRepository lineRepository, SectionService sectionService) {
         this.lineRepository = lineRepository;
+        this.sectionService = sectionService;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineRepository.save(request.toLine());
+        Line line = request.toLine();
+        line.addSection(sectionService.createSection(line, request.getUpStationId(), request.getDownStationId(), request.getDistance()));
+        Line persistLine = lineRepository.save(line);
         return LineResponse.of(persistLine);
     }
 
