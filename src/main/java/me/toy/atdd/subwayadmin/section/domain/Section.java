@@ -47,7 +47,7 @@ public class Section extends BaseEntity {
         this.line = line;
     }
 
-    public List<Station> getStaions() {
+    public List<Station> getStations() {
         return Arrays.asList(upStation, downStation);
     }
 }

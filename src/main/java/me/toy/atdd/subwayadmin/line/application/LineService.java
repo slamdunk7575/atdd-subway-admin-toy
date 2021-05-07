@@ -5,6 +5,7 @@ import me.toy.atdd.subwayadmin.line.domain.LineRepository;
 import me.toy.atdd.subwayadmin.line.dto.LineRequest;
 import me.toy.atdd.subwayadmin.line.dto.LineResponse;
 import me.toy.atdd.subwayadmin.section.application.SectionService;
+import me.toy.atdd.subwayadmin.section.dto.SectionRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +16,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
-    private SectionService sectionService;
+    private final LineRepository lineRepository;
+    private final SectionService sectionService;
 
     public LineService(LineRepository lineRepository, SectionService sectionService) {
         this.lineRepository = lineRepository;
@@ -55,4 +56,11 @@ public class LineService {
     public void deleteById(Long id) {
         lineRepository.deleteById(id);
     }
+
+    public LineResponse addSection(Long lineId, SectionRequest sectionRequest) {
+        Line line = selectLineById(lineId);
+        line.addSection(sectionService.createSection(line, sectionRequest.getUpStationId(), sectionRequest.getDownStationId(), sectionRequest.getDistance()));
+        return LineResponse.of(line);
+    }
+
 }

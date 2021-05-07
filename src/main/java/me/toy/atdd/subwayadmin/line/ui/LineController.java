@@ -3,6 +3,7 @@ package me.toy.atdd.subwayadmin.line.ui;
 import me.toy.atdd.subwayadmin.line.application.LineService;
 import me.toy.atdd.subwayadmin.line.dto.LineRequest;
 import me.toy.atdd.subwayadmin.line.dto.LineResponse;
+import me.toy.atdd.subwayadmin.section.dto.SectionRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,11 @@ public class LineController {
     public ResponseEntity deleteLine(@PathVariable Long id) {
         lineService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/{id}/sections")
+    public ResponseEntity addSection(@PathVariable Long id, @RequestBody SectionRequest sectionRequest) {
+        return ResponseEntity.ok().body(lineService.addSection(id, sectionRequest));
     }
 
 }
