@@ -9,8 +9,6 @@ import me.toy.atdd.subwayadmin.line.domain.Line;
 import me.toy.atdd.subwayadmin.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,8 +33,7 @@ public class Section extends BaseEntity {
     private Distance distance;
 
     @Builder
-    public Section(Long id, Line line, Station upStation, Station downStation, Distance distance) {
-        this.id = id;
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -47,7 +44,24 @@ public class Section extends BaseEntity {
         this.line = line;
     }
 
-    public List<Station> getStations() {
-        return Arrays.asList(upStation, downStation);
+    public boolean isUpStationInSection(Station newUpStation) {
+        if (this.upStation == null) {
+            return false;
+        }
+        return this.upStation.equals(newUpStation);
+    }
+
+    public boolean isDownStationInSection(Station newDownStation) {
+        return this.downStation.equals(newDownStation);
+    }
+
+    public void updateUpStationToNewDownStation(Station newDownStation, Distance distance) {
+        this.upStation = newDownStation;
+        this.distance.updateDistance(distance.getValue());
+    }
+
+    public void updateDownStationToNewUpStation(Station newUpStation, Distance distance) {
+        this.downStation = newUpStation;
+        this.distance.updateDistance(distance.getValue());
     }
 }

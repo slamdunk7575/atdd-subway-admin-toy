@@ -2,6 +2,7 @@ package me.toy.atdd.subwayadmin.line.dto;
 
 import lombok.Builder;
 import me.toy.atdd.subwayadmin.line.domain.Line;
+import me.toy.atdd.subwayadmin.station.domain.Station;
 
 import java.util.Objects;
 
@@ -40,6 +41,10 @@ public class LineRequest {
 
     public Line toLine() {
         return new Line(name, color);
+    }
+
+    public Line toLine(Station upStation, Station downStation) {
+        return new Line(name, color, upStation, downStation, distance);
     }
 
     public String getName() {
