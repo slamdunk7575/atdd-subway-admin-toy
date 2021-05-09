@@ -41,7 +41,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("역 사이에 새로운 역을 등록하는 경우 : 기존 상행역 같고 - 새로운 하행역 추가")
+    @DisplayName("역 사이에 새로운 역을 등록하는 경우 : 기존 상행역 같음 - 새로운 하행역 추가")
     void addSectionSameUpStation() {
         // given
         SectionRequest sectionRequest = new SectionRequest(천호역, 잠실역, 5);
@@ -52,8 +52,22 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         // then
         지하철_노선에_구간_등록됨(response);
         지하철_노선에_등록한_구간_포함됨(response, Arrays.asList("천호역", "잠실역", "문정역"));
-
     }
+
+    @Test
+    @DisplayName("역 사이에 새로운 역을 등록하는 경우 : 새로운 상행역 추가 - 기존 하행역 같음")
+    void addSectionSameDownStation() {
+        // given
+        SectionRequest sectionRequest = new SectionRequest(잠실역, 문정역, 5);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_구간_등록_요청(lineNumber8.getId(), sectionRequest);
+
+        // then
+        지하철_노선에_구간_등록됨(response);
+        지하철_노선에_등록한_구간_포함됨(response, Arrays.asList("천호역", "잠실역", "문정역"));
+    }
+
 
     private void 지하철_노선에_등록한_구간_포함됨(ExtractableResponse<Response> response, List<String> expectedStations) {
         List<String> resultStations = response.jsonPath().getList("stations", SectionResponse.class).stream()
