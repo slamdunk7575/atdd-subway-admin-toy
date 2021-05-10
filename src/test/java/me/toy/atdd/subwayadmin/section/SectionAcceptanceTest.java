@@ -10,6 +10,7 @@ import me.toy.atdd.subwayadmin.line.dto.LineResponse;
 import me.toy.atdd.subwayadmin.section.dto.SectionRequest;
 import me.toy.atdd.subwayadmin.section.dto.SectionResponse;
 import me.toy.atdd.subwayadmin.station.StationAcceptanceTest;
+import me.toy.atdd.subwayadmin.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("역 사이에 새로운 역을 등록하는 경우 : 기존 상행역 같음 - 새로운 하행역 추가")
     void addSectionSameUpStation() {
         // given
-        SectionRequest sectionRequest = new SectionRequest(천호역, 잠실역, 5);
+        SectionRequest sectionRequest = getSectionRequest(천호역, 잠실역, 5);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선에_구간_등록_요청(lineNumber8.getId(), sectionRequest);
@@ -58,7 +59,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("역 사이에 새로운 역을 등록하는 경우 : 새로운 상행역 추가 - 기존 하행역 같음")
     void addSectionSameDownStation() {
         // given
-        SectionRequest sectionRequest = new SectionRequest(잠실역, 문정역, 5);
+        SectionRequest sectionRequest = getSectionRequest(잠실역, 문정역, 5);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선에_구간_등록_요청(lineNumber8.getId(), sectionRequest);
@@ -68,8 +69,31 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_등록한_구간_포함됨(response, Arrays.asList("천호역", "잠실역", "문정역"));
     }
 
+    @Test
+    @DisplayName("새로운 역을 상행 종점으로 등록할 경우")
+    public void addSectionNewUpStation() {
+        // given
+        StationResponse 암사역 = StationAcceptanceTest.지하철역_생성_요청("암사역").as(StationResponse.class);
+        SectionRequest sectionRequest = getSectionRequest(암사역.getId(), 천호역, 5);
 
-    private void 지하철_노선에_등록한_구간_포함됨(ExtractableResponse<Response> response, List<String> expectedStations) {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_구간_등록_요청(lineNumber8.getId(), sectionRequest);
+
+        // then
+        지하철_노선에_구간_등록됨(response);
+        지하철_노선에_등록한_구간_포함됨(response, Arrays.asList("암사역", "천호역", "문정역"));
+    }
+
+    private SectionRequest getSectionRequest(Long upStationId, Long downStationId, int distance) {
+        return SectionRequest.builder()
+                .upStationId(upStationId)
+                .downStationId(downStationId)
+                .distance(distance)
+                .build();
+    }
+
+
+    public void 지하철_노선에_등록한_구간_포함됨(ExtractableResponse<Response> response, List<String> expectedStations) {
         List<String> resultStations = response.jsonPath().getList("stations", SectionResponse.class).stream()
                 .map(SectionResponse::getName)
                 .collect(Collectors.toList());
@@ -77,7 +101,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private ExtractableResponse<Response> 지하철_노선에_구간_등록_요청(Long lineId, SectionRequest sectionRequest) {
+    public ExtractableResponse<Response> 지하철_노선에_구간_등록_요청(Long lineId, SectionRequest sectionRequest) {
         return RestAssured.given().log().all()
                 .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -86,7 +110,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 지하철_노선에_구간_등록됨(ExtractableResponse<Response> response) {
+    public void 지하철_노선에_구간_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
