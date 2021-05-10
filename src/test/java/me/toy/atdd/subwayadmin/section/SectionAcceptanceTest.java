@@ -84,6 +84,21 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_등록한_구간_포함됨(response, Arrays.asList("암사역", "천호역", "문정역"));
     }
 
+    @Test
+    @DisplayName("새로운 역을 하행 종점으로 등록할 경우")
+    public void addSectionNewDownStation() {
+        // given
+        StationResponse 모란역 = StationAcceptanceTest.지하철역_생성_요청("모란역").as(StationResponse.class);
+        SectionRequest sectionRequest = getSectionRequest(문정역, 모란역.getId(), 5);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_구간_등록_요청(lineNumber8.getId(), sectionRequest);
+
+        // then
+        지하철_노선에_구간_등록됨(response);
+        지하철_노선에_등록한_구간_포함됨(response, Arrays.asList("천호역", "문정역", "모란역"));
+    }
+
     private SectionRequest getSectionRequest(Long upStationId, Long downStationId, int distance) {
         return SectionRequest.builder()
                 .upStationId(upStationId)
@@ -99,7 +114,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
         assertThat(resultStations).containsAll(expectedStations);
     }
-
 
     public ExtractableResponse<Response> 지하철_노선에_구간_등록_요청(Long lineId, SectionRequest sectionRequest) {
         return RestAssured.given().log().all()
