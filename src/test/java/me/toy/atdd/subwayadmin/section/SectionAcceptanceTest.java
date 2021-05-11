@@ -14,6 +14,8 @@ import me.toy.atdd.subwayadmin.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -99,6 +101,20 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_등록한_구간_포함됨(response, Arrays.asList("천호역", "문정역", "모란역"));
     }
 
+    @DisplayName("새로운 역을 등록할 경우 기존 구간 길이보다 크거나 같으면 등록할 수 없음 : 기존 상행역 같음 - 새로운 하행역 추가")
+    @ParameterizedTest
+    @ValueSource(ints = {10, 30})
+    void addInvalidDistanceBasedUpStation(int distance) {
+        // given
+        SectionRequest sectionRequest = getSectionRequest(천호역, 잠실역, distance);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_구간_등록_요청(lineNumber8.getId(), sectionRequest);
+
+        // then
+        지하철_노선에_유효하지_않은_구간_등록할수없음(response);
+    }
+
     private SectionRequest getSectionRequest(Long upStationId, Long downStationId, int distance) {
         return SectionRequest.builder()
                 .upStationId(upStationId)
@@ -126,5 +142,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     public void 지하철_노선에_구간_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 지하철_노선에_유효하지_않은_구간_등록할수없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
