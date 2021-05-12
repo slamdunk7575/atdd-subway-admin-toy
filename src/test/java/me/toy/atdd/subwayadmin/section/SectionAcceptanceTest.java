@@ -130,6 +130,34 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_유효하지_않은_구간_등록할수없음(response);
     }
 
+    @DisplayName("상행역과 하행역이 이미 노선에 모두 등록되어 있다면 추가할 수 없음")
+    @Test
+    void addSectionAlreadyExistStations() {
+        // given
+        SectionRequest sectionRequest = getSectionRequest(천호역, 문정역, 10);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_구간_등록_요청(lineNumber8.getId(), sectionRequest);
+
+        // then
+        지하철_노선에_유효하지_않은_구간_등록할수없음(response);
+    }
+
+    @DisplayName("상행역과 하행역 둘 중 하나도 포함되어 있지 않으면 추가할 수 없음")
+    @Test
+    void addNotIncludedStationsInLine() {
+        // given
+        StationResponse 강남역 = StationAcceptanceTest.지하철역_생성_요청("강남역").as(StationResponse.class);
+        StationResponse 판교역 = StationAcceptanceTest.지하철역_생성_요청("판교역").as(StationResponse.class);
+        SectionRequest sectionRequest = getSectionRequest(강남역.getId(), 판교역.getId(), 7);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_구간_등록_요청(lineNumber8.getId(), sectionRequest);
+
+        // then
+        지하철_노선에_유효하지_않은_구간_등록할수없음(response);
+    }
+
     private SectionRequest getSectionRequest(Long upStationId, Long downStationId, int distance) {
         return SectionRequest.builder()
                 .upStationId(upStationId)
@@ -137,7 +165,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .distance(distance)
                 .build();
     }
-
 
     public void 지하철_노선에_등록한_구간_포함됨(ExtractableResponse<Response> response, List<String> expectedStations) {
         List<String> resultStations = response.jsonPath().getList("stations", SectionResponse.class).stream()
