@@ -115,6 +115,21 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_유효하지_않은_구간_등록할수없음(response);
     }
 
+
+    @DisplayName("새로운 역을 등록할 경우 기존 구간 길이보다 크거나 같으면 등록할 수 없음 : 새로운 상행역 추가 - 기존 하행역 같음")
+    @ParameterizedTest
+    @ValueSource(ints = {10, 30})
+    void addInvalidDistanceBasedDownStation(int distance) {
+        // given
+        SectionRequest sectionRequest = getSectionRequest(잠실역, 문정역, distance);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_구간_등록_요청(lineNumber8.getId(), sectionRequest);
+
+        // then
+        지하철_노선에_유효하지_않은_구간_등록할수없음(response);
+    }
+
     private SectionRequest getSectionRequest(Long upStationId, Long downStationId, int distance) {
         return SectionRequest.builder()
                 .upStationId(upStationId)
