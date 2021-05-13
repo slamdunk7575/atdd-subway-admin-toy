@@ -28,12 +28,13 @@ public class Distance {
         }
     }
 
-    public void updateDistance(int newDistance) {
+    public void updateDistance(Distance newDistance) {
+        int newSectionDistance = newDistance.getValue();
         if (this.value != 0) {
-            validateDistance(newDistance);
-            this.value -= newDistance;
+            validateDistance(newSectionDistance);
+            this.value -= newSectionDistance;
         }
-        this.value = newDistance;
+        this.value = newSectionDistance;
     }
 
     private void validateDistance(int newDistance) {
