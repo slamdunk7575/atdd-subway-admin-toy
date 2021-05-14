@@ -43,15 +43,15 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse findById(Long id) {
-        return LineResponse.of(selectLineById(id));
+        return LineResponse.of(findLineById(id));
     }
 
     public void updateLine(Long id, LineRequest lineRequest) {
-        Line persisLine = selectLineById(id);
+        Line persisLine = findLineById(id);
         persisLine.update(lineRequest.toLine());
     }
 
-    private Line selectLineById(Long id) {
+    private Line findLineById(Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
     }
@@ -61,7 +61,7 @@ public class LineService {
     }
 
     public LineResponse addSection(Long lineId, SectionRequest sectionRequest) {
-        Line line = selectLineById(lineId);
+        Line line = findLineById(lineId);
         Section newSection = toSection(line, sectionRequest);
         line.addSection(newSection);
         return LineResponse.of(line);
@@ -79,4 +79,10 @@ public class LineService {
                 .build();
     }
 
+    public LineResponse removeSection(Long lineId, Long stationId) {
+        Line line = findLineById(lineId);
+        Station station = stationService.selectStationById(stationId);
+        line.removeStation(station);
+        return LineResponse.of(lineRepository.save(line));
+    }
 }
