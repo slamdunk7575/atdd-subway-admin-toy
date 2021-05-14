@@ -9,6 +9,7 @@ import me.toy.atdd.subwayadmin.line.domain.Line;
 import me.toy.atdd.subwayadmin.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -63,5 +64,22 @@ public class Section extends BaseEntity {
     public void updateDownStationToNewUpStation(Station newUpStation, Distance newDistance) {
         this.downStation = newUpStation;
         this.distance.updateDistance(newDistance);
+    }
+
+    public void updateUpStationToRemove(Station newUpStation, Distance newDistance) {
+        this.upStation = newUpStation;
+        if (Objects.isNull(upStation)) {
+            this.distance.initDistance();
+            return;
+        }
+        this.distance.addDistance(newDistance);
+    }
+
+    public Station getStation() {
+        return this.downStation;
+    }
+
+    public int getSectionDistance() {
+        return this.distance.getValue();
     }
 }
