@@ -83,6 +83,6 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.selectStationById(stationId);
         line.removeStation(station);
-        return LineResponse.of(lineRepository.save(line));
+        return LineResponse.of(line);
     }
 }

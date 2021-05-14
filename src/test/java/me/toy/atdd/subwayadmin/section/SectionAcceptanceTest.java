@@ -174,6 +174,22 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_구간_거리_계산됨(response, Arrays.asList(0, 10));
     }
 
+    @DisplayName("노선에서 상행 종점 제거")
+    @Test
+    void deleteStartSection() {
+        // given
+        SectionRequest sectionRequest = getSectionRequest(천호역, 잠실역, 5);
+        지하철_노선에_구간_등록_요청(lineNumber8.getId(), sectionRequest);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_제거_요청(lineNumber8.getId(), 천호역);
+
+        // then
+        지하철_노선에_지하철역_제거됨(response);
+        지하철_노선에_등록한_구간_포함됨(response, Arrays.asList("잠실역", "문정역"));
+        지하철_노선에_구간_거리_계산됨(response, Arrays.asList(5, 0));
+    }
+
     private SectionRequest getSectionRequest(Long upStationId, Long downStationId, int distance) {
         return SectionRequest.builder()
                 .upStationId(upStationId)
