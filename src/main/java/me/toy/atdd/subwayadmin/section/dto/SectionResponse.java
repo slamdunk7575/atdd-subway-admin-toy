@@ -1,5 +1,8 @@
 package me.toy.atdd.subwayadmin.section.dto;
 
+import me.toy.atdd.subwayadmin.section.domain.Section;
+import me.toy.atdd.subwayadmin.station.domain.Station;
+
 import java.time.LocalDateTime;
 
 public class SectionResponse {
@@ -20,12 +23,21 @@ public class SectionResponse {
         this.modifiedDate = modifiedDate;
     }
 
+    public static SectionResponse of(Section section) {
+        Station station = section.getStation();
+        return new SectionResponse(station.getId(), station.getName(), section.getSectionDistance(), station.getCreatedDate(), station.getModifiedDate());
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 
     public LocalDateTime getCreatedDate() {

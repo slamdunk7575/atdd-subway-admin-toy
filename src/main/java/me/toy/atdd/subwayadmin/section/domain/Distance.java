@@ -42,4 +42,12 @@ public class Distance {
             throw new IllegalArgumentException(INVALID_DISTANCE_ERROR_MESSAGE);
         }
     }
+
+    public void initDistance() {
+        this.value = 0;
+    }
+
+    public void addDistance(Distance newDistance) {
+        this.value += newDistance.value;
+    }
 }

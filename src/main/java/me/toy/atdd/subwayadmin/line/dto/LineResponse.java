@@ -1,24 +1,26 @@
 package me.toy.atdd.subwayadmin.line.dto;
 
+import lombok.Getter;
 import me.toy.atdd.subwayadmin.line.domain.Line;
-import me.toy.atdd.subwayadmin.station.dto.StationResponse;
+import me.toy.atdd.subwayadmin.section.dto.SectionResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 public class LineResponse {
     private Long id;
     private String name;
     private String color;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-    private List<StationResponse> stations;
+    private List<SectionResponse> stations;
 
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, LocalDateTime createdDate, LocalDateTime modifiedDate, List<StationResponse> stations) {
+    public LineResponse(Long id, String name, String color, LocalDateTime createdDate, LocalDateTime modifiedDate, List<SectionResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -28,33 +30,10 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        List<StationResponse> stationResponses = line.getStations().stream()
-                .map(StationResponse::of)
+        List<SectionResponse> sectionResponses = line.getLineSections().stream()
+                .map(SectionResponse::of)
                 .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getCreatedDate(), line.getModifiedDate(), stationResponses);
-    }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public LocalDateTime getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public List<StationResponse> getStations() {
-        return stations;
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getCreatedDate(), line.getModifiedDate(), sectionResponses);
     }
 }
