@@ -190,6 +190,55 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_구간_거리_계산됨(response, Arrays.asList(5, 0));
     }
 
+    @DisplayName("노선에서 하행 종점 제거")
+    @Test
+    void deleteEndSection() {
+        // given
+        SectionRequest sectionRequest = getSectionRequest(천호역, 잠실역, 5);
+        지하철_노선에_구간_등록_요청(lineNumber8.getId(), sectionRequest);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_제거_요청(lineNumber8.getId(), 문정역);
+
+        // then
+        지하철_노선에_지하철역_제거됨(response);
+        지하철_노선에_등록한_구간_포함됨(response, Arrays.asList("천호역", "잠실역"));
+        지하철_노선에_구간_거리_계산됨(response, Arrays.asList(0, 5));
+    }
+
+    @DisplayName("노선에 등록되지 않은 역 제거할 수 없음")
+    @Test
+    void deleteNotExistStation() {
+        // given
+        StationResponse 강남역 = StationAcceptanceTest.지하철역_생성_요청("강남역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_제거_요청(lineNumber8.getId(), 강남역.getId());
+
+        // then
+        지하철_노선에_유효하지_않은_구간은_제거되지않음(response);
+    }
+
+    @DisplayName("등록된 구간이 1개일 때, 상행역을 제거할 수 없음")
+    @Test
+    void deleteStartStationOnlyOneSection() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_제거_요청(lineNumber8.getId(), 천호역);
+
+        // then
+        지하철_노선에_유효하지_않은_구간은_제거되지않음(response);
+    }
+
+    @DisplayName("등록된 구간이 1개일 때, 하행역을 제거할 수 없음")
+    @Test
+    void deleteEndStationOnlyOneSection() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_제거_요청(lineNumber8.getId(), 문정역);
+
+        // then
+        지하철_노선에_유효하지_않은_구간은_제거되지않음(response);
+    }
+
     private SectionRequest getSectionRequest(Long upStationId, Long downStationId, int distance) {
         return SectionRequest.builder()
                 .upStationId(upStationId)
@@ -239,6 +288,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 .map(SectionResponse::getDistance)
                 .collect(Collectors.toList());
         assertThat(resultStationDistances).isEqualTo(expectedDistances);
+    }
+
+    private void 지하철_노선에_유효하지_않은_구간은_제거되지않음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }
