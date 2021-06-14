@@ -48,7 +48,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineRequest) {
         Line persisLine = findLineById(id);
-        persisLine.update(lineRequest.toLine());
+        persisLine.update(lineRequest.getName(), lineRequest.getColor());
     }
 
     private Line findLineById(Long id) {
