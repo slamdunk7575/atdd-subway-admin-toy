@@ -1,6 +1,7 @@
 package me.toy.atdd.subwayadmin.line.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import me.toy.atdd.subwayadmin.common.BaseEntity;
 import me.toy.atdd.subwayadmin.section.domain.Distance;
@@ -28,11 +29,7 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections;
 
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
+    @Builder
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
@@ -70,4 +67,5 @@ public class Line extends BaseEntity {
     public List<Section> getLineSections() {
         return sections.getSections();
     }
+
 }
